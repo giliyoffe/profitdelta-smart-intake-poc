@@ -362,6 +362,8 @@ export function SmartIntakeApp() {
     total: requests.length,
     new: requests.filter((request) => request.status === "new").length,
     afterHours: requests.filter((request) => request.is_after_hours).length,
+    critical: requests.filter((request) => request.ai_urgency === "critical").length,
+    high: requests.filter((request) => request.ai_urgency === "high").length,
     urgent: requests.filter((request) => request.ai_urgency === "high" || request.ai_urgency === "critical").length,
     contacted: requests.filter((request) => request.status === "contacted").length,
     scheduled: requests.filter((request) => request.status === "scheduled").length,
@@ -433,7 +435,7 @@ export function SmartIntakeApp() {
             <Metric label="Captured" value={metrics.total} />
             <Metric label="New" value={metrics.new} />
             <Metric label="After hours" value={metrics.afterHours} />
-            <Metric label="High/Critical" value={metrics.urgent} highlight />
+            <Metric label="Urgent requests" value={metrics.urgent} note={`${metrics.critical} critical, ${metrics.high} high`} highlight />
             <Metric label="Contacted" value={metrics.contacted} />
             <Metric label="Scheduled" value={metrics.scheduled} />
             <Metric label="Time saved" value={`${metrics.timeSaved}m`} />
@@ -595,11 +597,22 @@ export function SmartIntakeApp() {
   );
 }
 
-function Metric({ label, value, highlight = false }: { label: string; value: string | number; highlight?: boolean }) {
+function Metric({
+  label,
+  value,
+  note,
+  highlight = false
+}: {
+  label: string;
+  value: string | number;
+  note?: string;
+  highlight?: boolean;
+}) {
   return (
     <div className={`rounded-lg border p-4 ${highlight ? "border-[#C0186A]/30 bg-[#FFF1F7]" : "border-[#E6E1EC] bg-[#FAF8FC]"}`}>
       <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#7A6E83]">{label}</p>
       <p className="mt-2 text-2xl font-bold tracking-normal text-[#171021]">{value}</p>
+      {note ? <p className="mt-1 text-xs font-bold text-[#7A6E83]">{note}</p> : null}
     </div>
   );
 }
