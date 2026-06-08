@@ -336,6 +336,7 @@ function createRequestFromForm(form: IntakeFormState): RequestRecord {
 export function SmartIntakeApp() {
   const [requests, setRequests] = useState<RequestRecord[]>(seededRequests);
   const [selectedId, setSelectedId] = useState(seededRequests[0].id);
+  const [showOriginalMessage, setShowOriginalMessage] = useState(false);
   const [activeForm, setActiveForm] = useState<"customer" | "manual">("customer");
   const [form, setForm] = useState<IntakeFormState>(emptyForm);
   const [query, setQuery] = useState("");
@@ -397,11 +398,18 @@ export function SmartIntakeApp() {
                 src="/assets/logo/profitdelta-symbol.png"
               />
               <div>
-                <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#7B1FB5]">ProfitDelta Smart Intake</p>
-                <h1 className="mt-2 max-w-4xl text-3xl font-bold tracking-normal text-[#171021] sm:text-4xl">
+                <div className="flex flex-wrap items-center gap-3">
+                  <p className="text-xl font-black tracking-normal text-transparent [background:linear-gradient(135deg,#3A0B57_0%,#7B1FB5_45%,#D21B73_100%)] bg-clip-text">
+                    ProfitDelta
+                  </p>
+                  <span className="rounded-md border border-[#E6D7EE] bg-[#FAF8FC] px-2.5 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[#6B179C]">
+                    Smart Intake
+                  </span>
+                </div>
+                <h1 className="mt-2 max-w-3xl text-3xl font-bold tracking-normal text-[#171021] sm:text-4xl">
                   From missed messages to booked jobs.
                 </h1>
-                <p className="mt-3 max-w-3xl text-base leading-7 text-[#665A72]">
+                <p className="mt-3 max-w-2xl text-base leading-7 text-[#665A72]">
                   Capture every request, preserve the original customer message, and turn messy inbound work into a prioritized owner queue.
                 </p>
               </div>
@@ -542,7 +550,10 @@ export function SmartIntakeApp() {
                 className={`rounded-lg border bg-white p-4 text-left shadow-sm transition hover:border-[#9B2BC9] ${
                   request.id === selected?.id ? "border-[#9B2BC9] ring-2 ring-[#9B2BC9]/15" : "border-[#E6E1EC]"
                 }`}
-                onClick={() => setSelectedId(request.id)}
+                onClick={() => {
+                  setSelectedId(request.id);
+                  setShowOriginalMessage(false);
+                }}
                 type="button"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -578,7 +589,14 @@ export function SmartIntakeApp() {
           </div>
         </div>
 
-        {selected ? <RequestDetail request={selected} onStatusChange={(status) => updateStatus(selected.id, status)} /> : null}
+        {selected ? (
+          <RequestDetail
+            request={selected}
+            showOriginalMessage={showOriginalMessage}
+            onStatusChange={(status) => updateStatus(selected.id, status)}
+            onToggleOriginalMessage={() => setShowOriginalMessage((current) => !current)}
+          />
+        ) : null}
       </section>
     </main>
   );
@@ -635,7 +653,17 @@ function SelectFilter({
   );
 }
 
-function RequestDetail({ request, onStatusChange }: { request: RequestRecord; onStatusChange: (status: Status) => void }) {
+function RequestDetail({
+  request,
+  showOriginalMessage,
+  onStatusChange,
+  onToggleOriginalMessage
+}: {
+  request: RequestRecord;
+  showOriginalMessage: boolean;
+  onStatusChange: (status: Status) => void;
+  onToggleOriginalMessage: () => void;
+}) {
   return (
     <aside className="grid content-start gap-4 rounded-lg border border-[#E6E1EC] bg-white p-5 shadow-soft">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
@@ -647,12 +675,7 @@ function RequestDetail({ request, onStatusChange }: { request: RequestRecord; on
         <UrgencyBadge urgency={request.ai_urgency} />
       </div>
 
-      <section className="rounded-lg border-2 border-[#4B126F] bg-[#FCFAFF] p-4">
-        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#4B126F]">Original full customer message</p>
-        <p className="mt-3 whitespace-pre-wrap text-base leading-7 text-[#171021]">{request.original_message}</p>
-      </section>
-
-      <section className="grid gap-3 rounded-lg border border-[#E6E1EC] bg-[#FAF8FC] p-4">
+      <section className="grid gap-4 rounded-lg border border-[#E6E1EC] bg-[#FAF8FC] p-4">
         <DetailRow label="AI summary" value={request.ai_summary} />
         <div className="grid gap-3 sm:grid-cols-2">
           <DetailRow label="Category" value={request.ai_category.replaceAll("_", " ")} />
@@ -664,12 +687,34 @@ function RequestDetail({ request, onStatusChange }: { request: RequestRecord; on
           label="Missing information"
           value={request.ai_missing_information.length ? request.ai_missing_information.join(", ") : "No obvious missing details"}
         />
-        <DetailRow label="Suggested next action" value={request.ai_suggested_next_action} />
       </section>
 
       <section className="rounded-lg border border-[#E6E1EC] p-4">
-        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#7A6E83]">Suggested owner reply</p>
-        <p className="mt-3 rounded-md bg-[#F7F1FA] p-3 text-sm leading-6 text-[#171021]">{request.ai_suggested_owner_message}</p>
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#7A6E83]">Next action</p>
+        <p className="mt-2 text-base font-bold leading-7 text-[#171021]">{request.ai_suggested_next_action}</p>
+        <div className="mt-4 rounded-md bg-[#F7F1FA] p-3">
+          <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#7A6E83]">Suggested owner reply</p>
+          <p className="mt-2 text-sm leading-6 text-[#171021]">{request.ai_suggested_owner_message}</p>
+        </div>
+      </section>
+
+      <section className="rounded-lg border-2 border-[#4B126F] bg-[#FCFAFF] p-4">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#4B126F]">Original customer message</p>
+            <p className="mt-1 text-sm leading-6 text-[#665A72]">Source of truth. Use this to verify the AI summary before acting.</p>
+          </div>
+          <button
+            className="rounded-md border border-[#D8CADF] bg-white px-3 py-2 text-sm font-bold text-[#4B126F] hover:bg-[#F7F1FA]"
+            onClick={onToggleOriginalMessage}
+            type="button"
+          >
+            {showOriginalMessage ? "Hide full message" : "Show full message"}
+          </button>
+        </div>
+        <p className={`mt-3 whitespace-pre-wrap text-base leading-7 text-[#171021] ${showOriginalMessage ? "" : "line-clamp-3"}`}>
+          {request.original_message}
+        </p>
       </section>
 
       <section className="grid gap-3 rounded-lg border border-[#E6E1EC] p-4">
