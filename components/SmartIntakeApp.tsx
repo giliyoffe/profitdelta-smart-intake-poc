@@ -398,14 +398,7 @@ export function SmartIntakeApp() {
                 src="/assets/logo/profitdelta-symbol.png"
               />
               <div>
-                <div className="flex flex-wrap items-center gap-3">
-                  <p className="text-xl font-black tracking-normal text-transparent [background:linear-gradient(135deg,#3A0B57_0%,#7B1FB5_45%,#D21B73_100%)] bg-clip-text">
-                    ProfitDelta
-                  </p>
-                  <span className="rounded-md border border-[#E6D7EE] bg-[#FAF8FC] px-2.5 py-1 text-xs font-bold uppercase tracking-[0.14em] text-[#6B179C]">
-                    Smart Intake
-                  </span>
-                </div>
+                <p className="text-sm font-bold uppercase tracking-[0.18em] text-[#7B1FB5]">ProfitDelta Smart Intake</p>
                 <h1 className="mt-2 max-w-3xl text-3xl font-bold tracking-normal text-[#171021] sm:text-4xl">
                   From missed messages to booked jobs.
                 </h1>
