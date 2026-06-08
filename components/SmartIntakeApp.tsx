@@ -386,29 +386,40 @@ export function SmartIntakeApp() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F4F6F3] text-ink">
-      <section className="border-b border-[#D9E0DA] bg-white">
+    <main className="min-h-screen bg-[#F7F6FA] text-[#171021]">
+      <section className="border-b border-[#E6E1EC] bg-white">
         <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-5 px-5 py-5 lg:px-8">
           <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[0.16em] text-profit">ProfitDelta Smart Intake</p>
-              <h1 className="mt-2 max-w-4xl text-3xl font-bold tracking-normal text-ink sm:text-4xl">
-                From missed messages to booked jobs.
-              </h1>
-              <p className="mt-3 max-w-3xl text-base leading-7 text-muted">
-                Capture every request, preserve the original customer message, and turn messy inbound work into a prioritized owner queue.
-              </p>
+            <div className="flex max-w-5xl items-start gap-4">
+              <img
+                alt="ProfitDelta"
+                className="mt-1 h-14 w-14 rounded-lg border border-[#E7DDEA] bg-white object-contain p-1.5 shadow-sm"
+                src="/assets/logo/profitdelta-symbol.png"
+              />
+              <div>
+                <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#7B1FB5]">ProfitDelta Smart Intake</p>
+                <h1 className="mt-2 max-w-4xl text-3xl font-bold tracking-normal text-[#171021] sm:text-4xl">
+                  From missed messages to booked jobs.
+                </h1>
+                <p className="mt-3 max-w-3xl text-base leading-7 text-[#665A72]">
+                  Capture every request, preserve the original customer message, and turn messy inbound work into a prioritized owner queue.
+                </p>
+              </div>
             </div>
-            <div className="grid grid-cols-2 gap-2 rounded-lg border border-[#D9E0DA] bg-[#F8FAF8] p-2 text-sm font-semibold sm:flex">
+            <div className="grid grid-cols-2 gap-2 rounded-lg border border-[#E6E1EC] bg-[#FAF8FC] p-2 text-sm font-semibold sm:flex">
               <button
-                className={`rounded-md px-4 py-2 ${activeForm === "customer" ? "bg-ink text-white" : "text-muted hover:bg-white"}`}
+                className={`rounded-md px-4 py-2 ${
+                  activeForm === "customer" ? "bg-[#4B126F] text-white shadow-sm" : "text-[#665A72] hover:bg-white"
+                }`}
                 onClick={() => setActiveForm("customer")}
                 type="button"
               >
                 Customer form
               </button>
               <button
-                className={`rounded-md px-4 py-2 ${activeForm === "manual" ? "bg-ink text-white" : "text-muted hover:bg-white"}`}
+                className={`rounded-md px-4 py-2 ${
+                  activeForm === "manual" ? "bg-[#4B126F] text-white shadow-sm" : "text-[#665A72] hover:bg-white"
+                }`}
                 onClick={() => setActiveForm("manual")}
                 type="button"
               >
@@ -430,25 +441,25 @@ export function SmartIntakeApp() {
       </section>
 
       <section className="mx-auto grid w-full max-w-[1440px] gap-5 px-5 py-5 lg:grid-cols-[360px_minmax(380px,0.9fr)_minmax(420px,1.1fr)] lg:px-8">
-        <form className="grid content-start gap-4 rounded-lg border border-[#D9E0DA] bg-white p-4 shadow-soft" onSubmit={submitForm}>
+        <form className="grid min-w-0 content-start gap-4 rounded-lg border border-[#E6E1EC] bg-white p-4 shadow-soft" onSubmit={submitForm}>
           <div>
             <h2 className="text-lg font-bold">{activeForm === "customer" ? "Public intake" : "Paste incoming message"}</h2>
-            <p className="mt-1 text-sm leading-6 text-muted">
+            <p className="mt-1 text-sm leading-6 text-[#665A72]">
               {activeForm === "customer"
                 ? "Demo a request submitted through a simple website form."
                 : "Capture email, SMS, WhatsApp, or phone notes without losing the original text."}
             </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+          <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-1">
             <Field label="Customer name" value={form.customer_name} onChange={(value) => setForm({ ...form, customer_name: value })} />
             <Field label="Phone number" value={form.phone} onChange={(value) => setForm({ ...form, phone: value })} />
             <Field label="Email" value={form.email} onChange={(value) => setForm({ ...form, email: value })} />
             {activeForm === "manual" ? (
-              <label className="grid gap-1 text-sm font-semibold text-ink">
+              <label className="grid min-w-0 gap-1 text-sm font-semibold text-[#171021]">
                 Source channel
                 <select
-                  className="h-10 rounded-md border border-[#CBD5D1] bg-white px-3 text-sm font-medium focus-ring"
+                  className="h-10 w-full min-w-0 rounded-md border border-[#D8CADF] bg-white px-3 text-sm font-medium focus-ring"
                   value={form.source_channel}
                   onChange={(event) => setForm({ ...form, source_channel: event.target.value as SourceChannel })}
                 >
@@ -471,10 +482,10 @@ export function SmartIntakeApp() {
             />
           </div>
 
-          <label className="grid gap-1 text-sm font-semibold text-ink">
+          <label className="grid min-w-0 gap-1 text-sm font-semibold text-[#171021]">
             Original full customer message
             <textarea
-              className="min-h-36 rounded-md border border-[#CBD5D1] bg-white p-3 text-sm leading-6 focus-ring"
+              className="min-h-36 w-full min-w-0 rounded-md border border-[#D8CADF] bg-white p-3 text-sm leading-6 focus-ring"
               required
               value={form.original_message}
               onChange={(event) => setForm({ ...form, original_message: event.target.value })}
@@ -483,26 +494,26 @@ export function SmartIntakeApp() {
           </label>
 
           {activeForm === "manual" ? (
-            <label className="grid gap-1 text-sm font-semibold text-ink">
+            <label className="grid min-w-0 gap-1 text-sm font-semibold text-[#171021]">
               Owner notes
               <textarea
-                className="min-h-20 rounded-md border border-[#CBD5D1] bg-white p-3 text-sm leading-6 focus-ring"
+                className="min-h-20 w-full min-w-0 rounded-md border border-[#D8CADF] bg-white p-3 text-sm leading-6 focus-ring"
                 value={form.owner_notes}
                 onChange={(event) => setForm({ ...form, owner_notes: event.target.value })}
               />
             </label>
           ) : null}
 
-          <button className="rounded-md bg-profit px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-[#087D5B]" type="submit">
+          <button className="rounded-md bg-[#C0186A] px-4 py-3 text-sm font-bold text-white shadow-sm hover:bg-[#A91460]" type="submit">
             Capture request
           </button>
         </form>
 
         <div className="grid content-start gap-4">
-          <div className="rounded-lg border border-[#D9E0DA] bg-white p-4 shadow-soft">
+          <div className="rounded-lg border border-[#E6E1EC] bg-white p-4 shadow-soft">
             <div className="grid gap-3">
               <input
-                className="h-11 rounded-md border border-[#CBD5D1] px-3 text-sm font-medium focus-ring"
+                className="h-11 w-full min-w-0 rounded-md border border-[#D8CADF] px-3 text-sm font-medium focus-ring"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search customer, message, category"
@@ -528,29 +539,29 @@ export function SmartIntakeApp() {
             {filteredRequests.map((request) => (
               <button
                 key={request.id}
-                className={`rounded-lg border bg-white p-4 text-left shadow-sm transition hover:border-profit ${
-                  request.id === selected?.id ? "border-profit ring-2 ring-profit/15" : "border-[#D9E0DA]"
+                className={`rounded-lg border bg-white p-4 text-left shadow-sm transition hover:border-[#9B2BC9] ${
+                  request.id === selected?.id ? "border-[#9B2BC9] ring-2 ring-[#9B2BC9]/15" : "border-[#E6E1EC]"
                 }`}
                 onClick={() => setSelectedId(request.id)}
                 type="button"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="font-bold text-ink">{request.customer_name}</p>
-                    <p className="mt-1 line-clamp-2 text-sm leading-6 text-muted">{request.ai_summary}</p>
+                    <p className="font-bold text-[#171021]">{request.customer_name}</p>
+                    <p className="mt-1 line-clamp-2 text-sm leading-6 text-[#665A72]">{request.ai_summary}</p>
                   </div>
                   <UrgencyBadge urgency={request.ai_urgency} />
                 </div>
-                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-[0.08em] text-muted">
+                <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-bold uppercase tracking-[0.08em] text-[#7A6E83]">
                   <span>{request.ai_category.replaceAll("_", " ")}</span>
                   <span>{sourceLabels[request.source_channel]}</span>
                   <span>{formatTime(request.created_at)}</span>
-                  {request.is_after_hours ? <span className="rounded bg-amber/10 px-2 py-1 text-amber">After hours</span> : null}
+                  {request.is_after_hours ? <span className="rounded bg-[#F4EAF8] px-2 py-1 text-[#7B1FB5]">After hours</span> : null}
                 </div>
                 <div className="mt-3 flex items-center justify-between gap-3">
                   <StatusBadge status={request.status} />
                   <select
-                    className="h-9 rounded-md border border-[#CBD5D1] bg-white px-2 text-xs font-semibold focus-ring"
+                    className="h-9 rounded-md border border-[#D8CADF] bg-white px-2 text-xs font-semibold focus-ring"
                     value={request.status}
                     onClick={(event) => event.stopPropagation()}
                     onChange={(event) => updateStatus(request.id, event.target.value as Status)}
@@ -575,19 +586,19 @@ export function SmartIntakeApp() {
 
 function Metric({ label, value, highlight = false }: { label: string; value: string | number; highlight?: boolean }) {
   return (
-    <div className={`rounded-lg border p-4 ${highlight ? "border-profit/30 bg-profit/10" : "border-[#D9E0DA] bg-[#F8FAF8]"}`}>
-      <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted">{label}</p>
-      <p className="mt-2 text-2xl font-bold tracking-normal text-ink">{value}</p>
+    <div className={`rounded-lg border p-4 ${highlight ? "border-[#C0186A]/30 bg-[#FFF1F7]" : "border-[#E6E1EC] bg-[#FAF8FC]"}`}>
+      <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#7A6E83]">{label}</p>
+      <p className="mt-2 text-2xl font-bold tracking-normal text-[#171021]">{value}</p>
     </div>
   );
 }
 
 function Field({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
   return (
-    <label className="grid gap-1 text-sm font-semibold text-ink">
+    <label className="grid min-w-0 gap-1 text-sm font-semibold text-[#171021]">
       {label}
       <input
-        className="h-10 rounded-md border border-[#CBD5D1] bg-white px-3 text-sm font-medium focus-ring"
+        className="h-10 w-full min-w-0 rounded-md border border-[#D8CADF] bg-white px-3 text-sm font-medium focus-ring"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       />
@@ -607,10 +618,10 @@ function SelectFilter({
   onChange: (value: string) => void;
 }) {
   return (
-    <label className="grid gap-1 text-xs font-bold uppercase tracking-[0.1em] text-muted">
+    <label className="grid gap-1 text-xs font-bold uppercase tracking-[0.1em] text-[#7A6E83]">
       {label}
       <select
-        className="h-10 rounded-md border border-[#CBD5D1] bg-white px-3 text-sm font-semibold normal-case tracking-normal text-ink focus-ring"
+        className="h-10 w-full min-w-0 rounded-md border border-[#D8CADF] bg-white px-3 text-sm font-semibold normal-case tracking-normal text-[#171021] focus-ring"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >
@@ -626,22 +637,22 @@ function SelectFilter({
 
 function RequestDetail({ request, onStatusChange }: { request: RequestRecord; onStatusChange: (status: Status) => void }) {
   return (
-    <aside className="grid content-start gap-4 rounded-lg border border-[#D9E0DA] bg-white p-5 shadow-soft">
+    <aside className="grid content-start gap-4 rounded-lg border border-[#E6E1EC] bg-white p-5 shadow-soft">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
         <div>
-          <p className="text-sm font-bold uppercase tracking-[0.14em] text-profit">{request.id}</p>
-          <h2 className="mt-1 text-2xl font-bold tracking-normal">{request.customer_name}</h2>
-          <p className="mt-1 text-sm text-muted">{sourceLabels[request.source_channel]} · {formatTime(request.created_at)}</p>
+          <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#7B1FB5]">{request.id}</p>
+          <h2 className="mt-1 text-2xl font-bold tracking-normal text-[#171021]">{request.customer_name}</h2>
+          <p className="mt-1 text-sm text-[#665A72]">{sourceLabels[request.source_channel]} · {formatTime(request.created_at)}</p>
         </div>
         <UrgencyBadge urgency={request.ai_urgency} />
       </div>
 
-      <section className="rounded-lg border-2 border-ink bg-[#FFFDF6] p-4">
-        <p className="text-xs font-bold uppercase tracking-[0.12em] text-ink">Original full customer message</p>
-        <p className="mt-3 whitespace-pre-wrap text-base leading-7 text-ink">{request.original_message}</p>
+      <section className="rounded-lg border-2 border-[#4B126F] bg-[#FCFAFF] p-4">
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#4B126F]">Original full customer message</p>
+        <p className="mt-3 whitespace-pre-wrap text-base leading-7 text-[#171021]">{request.original_message}</p>
       </section>
 
-      <section className="grid gap-3 rounded-lg border border-[#D9E0DA] bg-[#F8FAF8] p-4">
+      <section className="grid gap-3 rounded-lg border border-[#E6E1EC] bg-[#FAF8FC] p-4">
         <DetailRow label="AI summary" value={request.ai_summary} />
         <div className="grid gap-3 sm:grid-cols-2">
           <DetailRow label="Category" value={request.ai_category.replaceAll("_", " ")} />
@@ -656,13 +667,13 @@ function RequestDetail({ request, onStatusChange }: { request: RequestRecord; on
         <DetailRow label="Suggested next action" value={request.ai_suggested_next_action} />
       </section>
 
-      <section className="rounded-lg border border-[#D9E0DA] p-4">
-        <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted">Suggested owner reply</p>
-        <p className="mt-3 rounded-md bg-[#F4F6F3] p-3 text-sm leading-6 text-ink">{request.ai_suggested_owner_message}</p>
+      <section className="rounded-lg border border-[#E6E1EC] p-4">
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#7A6E83]">Suggested owner reply</p>
+        <p className="mt-3 rounded-md bg-[#F7F1FA] p-3 text-sm leading-6 text-[#171021]">{request.ai_suggested_owner_message}</p>
       </section>
 
-      <section className="grid gap-3 rounded-lg border border-[#D9E0DA] p-4">
-        <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted">Customer contact details</p>
+      <section className="grid gap-3 rounded-lg border border-[#E6E1EC] p-4">
+        <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#7A6E83]">Customer contact details</p>
         <div className="grid gap-2 text-sm">
           <ContactLine label="Phone" value={request.phone || "Missing"} />
           <ContactLine label="Email" value={request.email || "Missing"} />
@@ -671,12 +682,12 @@ function RequestDetail({ request, onStatusChange }: { request: RequestRecord; on
         </div>
       </section>
 
-      <section className="grid gap-3 rounded-lg border border-[#D9E0DA] p-4">
+      <section className="grid gap-3 rounded-lg border border-[#E6E1EC] p-4">
         <label className="grid gap-1 text-sm font-semibold">
           Status
           <select
             aria-label="Request status"
-            className="h-11 rounded-md border border-[#CBD5D1] bg-white px-3 text-sm font-semibold focus-ring"
+            className="h-11 w-full min-w-0 rounded-md border border-[#D8CADF] bg-white px-3 text-sm font-semibold focus-ring"
             value={request.status}
             onChange={(event) => onStatusChange(event.target.value as Status)}
           >
@@ -696,26 +707,26 @@ function RequestDetail({ request, onStatusChange }: { request: RequestRecord; on
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs font-bold uppercase tracking-[0.12em] text-muted">{label}</p>
-      <p className="mt-1 text-sm font-semibold leading-6 text-ink">{value}</p>
+      <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#7A6E83]">{label}</p>
+      <p className="mt-1 text-sm font-semibold leading-6 text-[#171021]">{value}</p>
     </div>
   );
 }
 
 function ContactLine({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between gap-4 border-b border-[#EEF1EE] pb-2 last:border-0 last:pb-0">
-      <span className="font-semibold text-muted">{label}</span>
-      <span className="text-right font-bold text-ink">{value}</span>
+    <div className="flex justify-between gap-4 border-b border-[#EFE8F2] pb-2 last:border-0 last:pb-0">
+      <span className="font-semibold text-[#665A72]">{label}</span>
+      <span className="text-right font-bold text-[#171021]">{value}</span>
     </div>
   );
 }
 
 function UrgencyBadge({ urgency }: { urgency: Urgency }) {
   const classes: Record<Urgency, string> = {
-    critical: "border-[#B42318] bg-[#FEE4E2] text-[#B42318]",
-    high: "border-amber bg-amber/10 text-amber",
-    medium: "border-delta bg-delta/10 text-delta",
+    critical: "border-[#C0186A] bg-[#FFF1F7] text-[#A91460]",
+    high: "border-[#7B1FB5] bg-[#F4EAF8] text-[#6B179C]",
+    medium: "border-[#5E3BD6] bg-[#EFECFF] text-[#4C2BB3]",
     low: "border-[#667085] bg-[#F2F4F7] text-[#475467]"
   };
 
@@ -723,7 +734,7 @@ function UrgencyBadge({ urgency }: { urgency: Urgency }) {
 }
 
 function StatusBadge({ status }: { status: Status }) {
-  return <span className="rounded-md bg-[#EEF1EE] px-2.5 py-1 text-xs font-bold uppercase tracking-[0.08em] text-muted">{statusLabels[status]}</span>;
+  return <span className="rounded-md bg-[#F0E8F4] px-2.5 py-1 text-xs font-bold uppercase tracking-[0.08em] text-[#665A72]">{statusLabels[status]}</span>;
 }
 
 function formatTime(dateValue: string) {
