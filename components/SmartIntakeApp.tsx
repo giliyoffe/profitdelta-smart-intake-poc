@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
+import type { FormEvent, ReactNode } from "react";
+import { useMemo, useRef, useState } from "react";
 
 type SourceChannel = "web_form" | "email_paste" | "sms_paste" | "whatsapp_paste" | "phone_note" | "simulated";
 type Status = "new" | "contacted" | "scheduled" | "completed" | "archived";
@@ -337,11 +338,13 @@ export function SmartIntakeApp() {
   const [requests, setRequests] = useState<RequestRecord[]>(seededRequests);
   const [selectedId, setSelectedId] = useState(seededRequests[0].id);
   const [showOriginalMessage, setShowOriginalMessage] = useState(false);
+  const [highlightedUrgency, setHighlightedUrgency] = useState<Urgency | null>(null);
   const [activeForm, setActiveForm] = useState<"customer" | "manual">("customer");
   const [form, setForm] = useState<IntakeFormState>(emptyForm);
   const [query, setQuery] = useState("");
   const [urgencyFilter, setUrgencyFilter] = useState<"all" | Urgency>("all");
   const [statusFilter, setStatusFilter] = useState<"all" | Status>("all");
+  const requestQueueRef = useRef<HTMLDivElement>(null);
 
   const sortedRequests = useMemo(
     () => [...requests].sort((a, b) => urgencyRank[b.ai_urgency] - urgencyRank[a.ai_urgency] || +new Date(b.created_at) - +new Date(a.created_at)),
@@ -388,6 +391,20 @@ export function SmartIntakeApp() {
     );
   }
 
+  function jumpToUrgency(urgency: Urgency) {
+    const firstMatch = sortedRequests.find((request) => request.ai_urgency === urgency);
+    if (!firstMatch) return;
+
+    setQuery("");
+    setStatusFilter("all");
+    setUrgencyFilter(urgency);
+    setSelectedId(firstMatch.id);
+    setShowOriginalMessage(false);
+    setHighlightedUrgency(urgency);
+    window.setTimeout(() => setHighlightedUrgency(null), 1400);
+    window.requestAnimationFrame(() => requestQueueRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+
   return (
     <main className="min-h-screen bg-[#F7F6FA] text-[#171021]">
       <section className="border-b border-[#E6E1EC] bg-white">
@@ -405,7 +422,7 @@ export function SmartIntakeApp() {
                   From missed messages to booked jobs.
                 </h1>
                 <p className="mt-3 max-w-2xl text-base leading-7 text-[#665A72]">
-                  Capture every request, preserve the original customer message, and turn messy inbound work into a prioritized owner queue.
+                  Turn customer message chaos into a clear, prioritized action queue.
                 </p>
               </div>
             </div>
@@ -435,7 +452,29 @@ export function SmartIntakeApp() {
             <Metric label="Captured" value={metrics.total} />
             <Metric label="New" value={metrics.new} />
             <Metric label="After hours" value={metrics.afterHours} />
-            <Metric label="Urgent requests" value={metrics.urgent} note={`${metrics.critical} critical, ${metrics.high} high`} highlight />
+            <Metric
+              label="Urgent requests"
+              value={metrics.urgent}
+              note={
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    className="rounded-md border border-[#E7B4CC] bg-white px-2 py-1 text-xs font-bold text-[#A91460] hover:bg-[#FFF1F7]"
+                    onClick={() => jumpToUrgency("critical")}
+                    type="button"
+                  >
+                    {metrics.critical} critical
+                  </button>
+                  <button
+                    className="rounded-md border border-[#D8C2EA] bg-white px-2 py-1 text-xs font-bold text-[#6B179C] hover:bg-[#F4EAF8]"
+                    onClick={() => jumpToUrgency("high")}
+                    type="button"
+                  >
+                    {metrics.high} high
+                  </button>
+                </div>
+              }
+              highlight
+            />
             <Metric label="Contacted" value={metrics.contacted} />
             <Metric label="Scheduled" value={metrics.scheduled} />
             <Metric label="Time saved" value={`${metrics.timeSaved}m`} />
@@ -538,13 +577,13 @@ export function SmartIntakeApp() {
             </div>
           </div>
 
-          <div className="grid gap-3">
+          <div className="grid gap-3" ref={requestQueueRef}>
             {filteredRequests.map((request) => (
               <button
                 key={request.id}
                 className={`rounded-lg border bg-white p-4 text-left shadow-sm transition hover:border-[#9B2BC9] ${
                   request.id === selected?.id ? "border-[#9B2BC9] ring-2 ring-[#9B2BC9]/15" : "border-[#E6E1EC]"
-                }`}
+                } ${highlightedUrgency === request.ai_urgency ? "ring-4 ring-[#C0186A]/25" : ""}`}
                 onClick={() => {
                   setSelectedId(request.id);
                   setShowOriginalMessage(false);
@@ -605,14 +644,14 @@ function Metric({
 }: {
   label: string;
   value: string | number;
-  note?: string;
+  note?: ReactNode;
   highlight?: boolean;
 }) {
   return (
     <div className={`rounded-lg border p-4 ${highlight ? "border-[#C0186A]/30 bg-[#FFF1F7]" : "border-[#E6E1EC] bg-[#FAF8FC]"}`}>
       <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#7A6E83]">{label}</p>
       <p className="mt-2 text-2xl font-bold tracking-normal text-[#171021]">{value}</p>
-      {note ? <p className="mt-1 text-xs font-bold text-[#7A6E83]">{note}</p> : null}
+      {note ? <div className="mt-2 text-xs font-bold text-[#7A6E83]">{note}</div> : null}
     </div>
   );
 }
